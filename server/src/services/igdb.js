@@ -92,17 +92,20 @@ export class IGDBService {
 
     /**
      * Retrieves games from the IGDB API
+     * @param {string} [searchString=""] - The search string for the games
      * @returns {Promise<Object>} The games data
      */
-    async getGames() {
+    async getGames(searchString = "") {
         const accessToken = await this.getAccessToken();
+        const fields = "id,name,cover,genres,rating,summary,first_release_date";
+        const search = searchString ? `search "${searchString}";` : "";
         const response = await fetch(`${API_BASE_URL}/games`, {
             method: "POST",
             headers: {
                 "Client-ID": this.#clientId,
                 "Authorization": `Bearer ${accessToken}`
             },
-            body: "fields id,name,cover,genres,rating,summary,first_release_date;",
+            body: `fields ${fields}; ${search}`,
         });
 
         const data = await response.json();

@@ -50,6 +50,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     /** @type {LambdaResult} */
+    console.log('Event:', event.queryStringParameters);
     const result = await handler(event);
 
     // Set the status code and headers

@@ -1,6 +1,5 @@
-import type { MetaFunction, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from '@remix-run/react';
-
+import { useState, useEffect, useCallback } from "react";
+import debounce from 'lodash/debounce';
 
 interface Game {
   id?: number;
@@ -16,23 +15,55 @@ interface Game {
   first_release_date?: number;
 }
 
-export const loader: LoaderFunction = async () => {
-  const response = await fetch('http://localhost:8080/games');
-  const games = await response.json();
-  return games;
-};
-
 export default function Index() {
-  const { games } = useLoaderData<{ games: Game[] }>();
-  console.log(games);
+  const [games, setGames] = useState<Game[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchGames = async (searchString: string) => {
+    const response = await fetch(`http://localhost:8080/games?searchString=${searchString}`);
+    const data = await response.json();
+    return data.games;
+  };
+
+  const debouncedFetchGames = useCallback(
+    debounce(async (searchString: string) => {
+      const fetchedGames = await fetchGames(searchString);
+      setGames(fetchedGames);
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    if (searchTerm) {
+      debouncedFetchGames(searchTerm);
+    } else {
+      setGames([]);
+    }
+  }, [searchTerm, debouncedFetchGames]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Main Content */}
       <main className="flex-grow container mx-auto mt-20 p-4">
         <h1 className="text-3xl font-bold mb-6">Game Catalog</h1>
+        <div className="mb-6">
+          <div className="flex items-center">
+            <input
+              type="text"
+              name="search"
+              placeholder="Search games..."
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {games.map((game) => (
+          {games?.map((game) => (
             <div key={game.id} className="bg-white rounded-lg shadow-md overflow-hidden group relative">
               <img src={game.cover?.url} alt={game.name} className="w-full h-48 object-cover" />
               <div className="p-4">
@@ -65,4 +96,3 @@ export default function Index() {
     </div>
   );
 };
-
