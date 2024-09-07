@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --outdir=dist --target=node,deno",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.645.0",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.5.4",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "esbuild": "^0.23.1",
+    "eslint": "^9.9.1",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "aws-lambda-router": "^0.11.0"
+  }
+}
