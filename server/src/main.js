@@ -24,7 +24,7 @@ export const handler = routerHandler({
              */
             {
                 path: "/games",
-                method: "GET",
+                method: "POST",
                 action: getGameList,
                 parseQueryString: true,
                 parseQueryParams: true,

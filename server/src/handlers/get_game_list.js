@@ -12,8 +12,7 @@ import { IGDBService } from "../services/igdb.js";
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>} The response object with game list
  */
 export default async function getGameList(request, context) {
-    console.log('Request object:', JSON.stringify(request, null, 2));
-    const searchString = request.queryStringParameters?.searchString;
+    const searchString = request.body?.searchString;
     const igdbService = new IGDBService();
     const games = await igdbService.getGames(searchString);
     return {

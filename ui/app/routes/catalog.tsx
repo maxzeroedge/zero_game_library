@@ -20,7 +20,13 @@ export default function Index() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchGames = async (searchString: string) => {
-    const response = await fetch(`http://localhost:8080/games?searchString=${searchString}`);
+    const response = await fetch(
+      'http://localhost:8080/games',
+      {
+        method: 'POST',
+        body: JSON.stringify({ searchString }),
+      }
+    );
     const data = await response.json();
     return data.games;
   };
@@ -69,7 +75,7 @@ export default function Index() {
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-2">{game.name}</h2>
                 <p className="text-sm text-gray-600 mb-2">Genre: {game.genres?.map(genre => genre.name).join(', ')}</p>
-                <p className="text-sm text-gray-600">Rating: {game.rating}/5</p>
+                <p className="text-sm text-gray-600">Rating: {game.rating}/100</p>
               </div>
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2">Play</button>
