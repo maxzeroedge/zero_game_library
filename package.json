@@ -1,5 +1,5 @@
 {
-  "name": "zero_game_library",
+  "name": "@zero_game_library/root",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
