@@ -1,3 +1,4 @@
+name: zero_game_library
 packages:
-  - 'ui/*'
-  - 'server/*'
+  - ui
+  - server

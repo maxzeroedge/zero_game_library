@@ -2,7 +2,7 @@
   "name": "@zero_game_library/root",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "ui:dev": "cd ui && pnpm run dev",
     "server:dev": "cd server && pnpm run dev",

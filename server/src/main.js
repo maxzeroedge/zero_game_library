@@ -31,8 +31,8 @@ export const handler = routerHandler({
                 parseQueryParams: true,
             },
             {
-                path: "/game/:id",
-                method: "POST",
+                path: "/game/:gameId",
+                method: "GET",
                 action: getGameDetail,
                 parseQueryString: true,
                 parseQueryParams: true,

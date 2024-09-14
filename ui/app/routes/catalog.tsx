@@ -1,20 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import debounce from 'lodash/debounce';
 import { Footer } from "~/components/Footer";
-
-interface Game {
-  id?: number;
-  name?: string;
-  cover?: {
-    url: string;
-  };
-  genres?: Array<{
-    name: string;
-  }>;
-  rating?: number;
-  summary?: string;
-  first_release_date?: number;
-}
+import { Game } from "~/models/igdb";
 
 export default function Catalog() {
   const [games, setGames] = useState<Game[]>([]);
