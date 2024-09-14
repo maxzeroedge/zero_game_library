@@ -5,6 +5,7 @@
 
 import { handler as routerHandler } from 'aws-lambda-router';
 import getGameList from "./handlers/get_game_list.js";
+import getGameDetail from "./handlers/get_game_detail.js";
 
 /**
  * @type {import('aws-lambda').Handler}
@@ -26,6 +27,13 @@ export const handler = routerHandler({
                 path: "/games",
                 method: "POST",
                 action: getGameList,
+                parseQueryString: true,
+                parseQueryParams: true,
+            },
+            {
+                path: "/game/:id",
+                method: "POST",
+                action: getGameDetail,
                 parseQueryString: true,
                 parseQueryParams: true,
             },

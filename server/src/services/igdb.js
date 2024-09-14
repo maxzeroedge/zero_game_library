@@ -105,10 +105,42 @@ export class IGDBService {
                 "Client-ID": this.#clientId,
                 "Authorization": `Bearer ${accessToken}`
             },
-            body: `fields ${fields}; ${search}`,
+            body: `fields ${fields}; ${search} limit 20; where version_parent = null;`,
         });
 
         const data = await response.json();
         return data;
+    }
+
+    /**
+     * Retrieves a game's description and related parameters from the IGDB API based on the game's ID
+     * @param {number} gameId - The IGDB game ID
+     * @returns {Promise<Object>} The game data including description and related parameters
+     */
+    async getGameDescription(gameId) {
+        const accessToken = await this.getAccessToken();
+        const fields = "id,name,summary,storyline,genres.name,platforms.name,themes.name,game_modes.name,player_perspectives.name,keywords.name";
+        
+        const response = await fetch(`${API_BASE_URL}/games`, {
+            method: "POST",
+            headers: {
+                "Client-ID": this.#clientId,
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json"
+            },
+            body: `fields ${fields}; where id = ${gameId};`,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.length === 0) {
+            throw new Error(`No game found with ID ${gameId}`);
+        }
+
+        return data[0];
     }
 }
