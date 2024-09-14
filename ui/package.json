@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "@zero_game_library/ui",
   "private": true,
   "sideEffects": false,
   "type": "module",
