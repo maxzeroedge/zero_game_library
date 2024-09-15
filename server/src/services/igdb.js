@@ -119,7 +119,7 @@ export class IGDBService {
      */
     async getGameDescription(gameId) {
         const accessToken = await this.getAccessToken();
-        const fields = "id,name,summary,storyline,genres.name,platforms.name,themes.name,game_modes.name,player_perspectives.name,keywords.name";
+        const fields = "id,name,summary,storyline,genres.name,platforms.name,themes.name,game_modes.name,player_perspectives.name,keywords.name,cover.url";
         
         const response = await fetch(`${API_BASE_URL}/games`, {
             method: "POST",

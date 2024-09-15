@@ -11,6 +11,10 @@ export interface Game {
     };
     genres?: Array<SubDetail>;
     themes?: Array<SubDetail>;
+    platforms?: Array<SubDetail>;
+    game_modes?: Array<SubDetail>;
+    player_perspectives?: Array<SubDetail>;
+    keywords?: Array<SubDetail>;
     rating?: number;
     summary?: string;
     first_release_date?: number;
