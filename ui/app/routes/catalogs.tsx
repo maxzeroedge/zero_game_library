@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import debounce from 'lodash/debounce';
 import { Footer } from "~/components/Footer";
 import { Game } from "~/models/igdb";
+import { config } from "~/config";
 
 export default function Catalog() {
   const [games, setGames] = useState<Game[]>([]);
@@ -13,9 +14,11 @@ export default function Catalog() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        'http://localhost:8080/games',
+        `${config.api.baseUrl}/${config.api.apiType}/games`,
         {
           method: 'POST',
+
+
           body: JSON.stringify({ searchString }),
         }
       );

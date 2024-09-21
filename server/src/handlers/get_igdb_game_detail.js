@@ -1,6 +1,6 @@
 /**
  * @fileoverview Handler for getting game detail from IGDB
- * @module getGameDetail
+ * @module getIgdbGameDetail
  */
 import { IGDBService } from "../services/igdb.js";
 
@@ -10,7 +10,7 @@ import { IGDBService } from "../services/igdb.js";
  * @param {import('aws-lambda').Context} context - The Lambda function context
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>} The response object with game detail
  */
-export default async function getGameDetail(request, context) {
+export default async function getIgdbGameDetail(request, context) {
     const gameId = request.paths?.gameId;
     const igdbService = new IGDBService();
     const game = await igdbService.getGameDescription(gameId);

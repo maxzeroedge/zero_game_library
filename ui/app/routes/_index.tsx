@@ -16,7 +16,7 @@ export default function Index() {
           <a
             className="text-blue-700 underline visited:text-purple-900"
             target="_blank"
-            href="/catalog"
+            href="/catalogs"
             rel="noreferrer"
           >
             Games Catalog

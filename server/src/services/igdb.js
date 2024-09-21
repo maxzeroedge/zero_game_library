@@ -3,7 +3,8 @@
  * @module IGDBService
  */
 
-import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+import { GameResultMapper } from "../utils/mapper.js";
+import { SecretService } from "./secrets.js";
 
 /** @constant {string} */
 const AUTH_BASE_URL = "https://id.twitch.tv/oauth2/token";
@@ -33,20 +34,9 @@ export class IGDBService {
     constructor(clientId = AUTH_CLIENT_ID, clientSecret = AUTH_CLIENT_SECRET) {
         this.#clientId = clientId || "";
         this.#clientSecret = clientSecret || "";
+        this.secretService = new SecretService();
     }
 
-    /**
-     * Retrieves client credentials from AWS Secrets Manager
-     * @returns {Promise<Object>} The secret containing client credentials
-     */
-    async getClientCredentialsFromSecret() {
-        const client = new SecretsManagerClient({ region: "ap-south-1" });
-        const command = new GetSecretValueCommand({ SecretId: "zero_game_library_secrets" });
-        const response = await client.send(command);
-        const secret = JSON.parse(response.SecretString);
-        return secret;
-    }
-    
     /**
      * Gets the access token, refreshing if necessary
      * @returns {Promise<string>} The access token
@@ -65,7 +55,7 @@ export class IGDBService {
      */
     async fetchAccessToken() {
         if (!this.#clientId || !this.#clientSecret) {
-            const secret = await this.getClientCredentialsFromSecret();
+            const secret = await this.secretService.getClientCredentialsFromSecret();
             this.#clientId = secret.IGDB_CLIENT_ID;
             this.#clientSecret = secret.IGDB_CLIENT_SECRET;
         }
@@ -109,7 +99,7 @@ export class IGDBService {
         });
 
         const data = await response.json();
-        return data;
+        return GameResultMapper.mapIgdbGameResultList(data);
     }
 
     /**
@@ -119,7 +109,7 @@ export class IGDBService {
      */
     async getGameDescription(gameId) {
         const accessToken = await this.getAccessToken();
-        const fields = "id,name,summary,storyline,genres.name,platforms.name,themes.name,game_modes.name,player_perspectives.name,keywords.name,cover.url";
+        const fields = "id,name,summary,storyline,genres.name,platforms.name,themes.name,game_modes.name,player_perspectives.name,keywords.name,cover.url,rating,release_dates.date";
         
         const response = await fetch(`${API_BASE_URL}/games`, {
             method: "POST",
@@ -143,6 +133,6 @@ export class IGDBService {
             throw new Error(`No game found with ID ${gameId}`);
         }
 
-        return data[0];
+        return GameResultMapper.mapIgdbGameResult(data[0]);
     }
 }

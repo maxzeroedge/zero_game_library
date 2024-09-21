@@ -4,8 +4,11 @@
  */
 
 import { handler as routerHandler } from 'aws-lambda-router';
-import getGameList from "./handlers/get_game_list.js";
-import getGameDetail from "./handlers/get_game_detail.js";
+import getIgdbGameList from "./handlers/get_igdb_game_list.js";
+import getIgdbGameDetail from "./handlers/get_igdb_game_detail.js";
+import getRawgGameList from "./handlers/get_rawg_game_list.js";
+import getRawgGameDetail from "./handlers/get_rawg_game_detail.js";
+
 
 /**
  * @type {import('aws-lambda').Handler}
@@ -24,18 +27,34 @@ export const handler = routerHandler({
              * @description Route configuration for getting game list
              */
             {
-                path: "/games",
+                path: "/igdb/games",
                 method: "POST",
-                action: getGameList,
+                action: getIgdbGameList,
                 parseQueryString: true,
                 parseQueryParams: true,
             },
             {
-                path: "/game/:gameId",
+                path: "/igdb/game/:gameId",
                 method: "GET",
-                action: getGameDetail,
+                action: getIgdbGameDetail,
                 parseQueryString: true,
                 parseQueryParams: true,
+            },
+            {
+                path: "/rawg/games",
+                method: "POST",
+                action: getRawgGameList,
+                parseQueryString: true,
+                parseQueryParams: true,
+
+            },
+            {
+                path: "/rawg/game/:gameId",
+                method: "GET",
+                action: getRawgGameDetail,
+                parseQueryString: true,
+                parseQueryParams: true,
+
             },
         ],
     },

@@ -6,9 +6,7 @@ export interface SubDetail {
 export interface Game {
     id?: number;
     name?: string;
-    cover?: {
-      url: string;
-    };
+    image?: string;
     genres?: Array<SubDetail>;
     themes?: Array<SubDetail>;
     platforms?: Array<SubDetail>;
@@ -17,5 +15,5 @@ export interface Game {
     keywords?: Array<SubDetail>;
     rating?: number;
     summary?: string;
-    first_release_date?: number;
+    releaseDate?: number;
 }
