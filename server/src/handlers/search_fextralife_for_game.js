@@ -1,6 +1,6 @@
 /**
  * @fileoverview Handler for getting game detail from IGDB
- * @module getFextraLifeGamePage
+ * @module searchFextraLifeForGame
  */
 
 import { FextraLifeService } from '../services/fextralife';
@@ -11,7 +11,7 @@ import { FextraLifeService } from '../services/fextralife';
  * @param {import('aws-lambda').Context} context - The Lambda function context
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>} The response object with game detail
  */
-export default async function getFextraLifeGamePage(request, context) {
+export default async function searchFextraLifeForGame(request, context) {
     const gameName = request.body?.gameName;
     const fextraLifeService = new FextraLifeService(gameName);
     const flUrl = fextraLifeService.getGameUrl();

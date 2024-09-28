@@ -8,6 +8,7 @@ import getIgdbGameList from "./handlers/get_igdb_game_list.js";
 import getIgdbGameDetail from "./handlers/get_igdb_game_detail.js";
 import getRawgGameList from "./handlers/get_rawg_game_list.js";
 import getRawgGameDetail from "./handlers/get_rawg_game_detail.js";
+import searchFextraLifeForGame from './handlers/search_fextralife_for_game.js';
 
 
 /**
@@ -57,7 +58,7 @@ export const handler = routerHandler({
             {
                 path: "/fextralife/game/:gameId",
                 method: "POST",
-                action: getFextraLifeGamePage,
+                action: searchFextraLifeForGame,
                 parseQueryString: true,
                 parseQueryParams: true,
             },
