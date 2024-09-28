@@ -13,10 +13,11 @@ import { FextraLifeService } from '../services/fextralife';
  */
 export default async function searchFextraLifeForGame(request, context) {
     const gameName = request.body?.gameName;
+    const searchString = request.body?.searchString;
     const fextraLifeService = new FextraLifeService(gameName);
-    const flUrl = fextraLifeService.getGameUrl();
+    const searchResults = fextraLifeService.searchForGame(searchString);
     return {
         statusCode: 200,
-        body: JSON.stringify({flUrl})
+        body: JSON.stringify({searchResults})
     };
 }
