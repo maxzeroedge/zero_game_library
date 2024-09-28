@@ -46,7 +46,6 @@ export const handler = routerHandler({
                 action: getRawgGameList,
                 parseQueryString: true,
                 parseQueryParams: true,
-
             },
             {
                 path: "/rawg/game/:gameId",
@@ -54,7 +53,13 @@ export const handler = routerHandler({
                 action: getRawgGameDetail,
                 parseQueryString: true,
                 parseQueryParams: true,
-
+            },
+            {
+                path: "/fextralife/game/:gameId",
+                method: "POST",
+                action: getFextraLifeGamePage,
+                parseQueryString: true,
+                parseQueryParams: true,
             },
         ],
     },
