@@ -25,6 +25,7 @@ export class SecretService {
     async readSecretValuesFromFile() {
         const homeDir = process.env.HOME || process.env.USERPROFILE;
         const filePath = `${homeDir}/.zero_game_library_secrets.json`;
+        console.log(filePath);
 
         try {
             const fileContent = await fs.promises.readFile(filePath, 'utf8');

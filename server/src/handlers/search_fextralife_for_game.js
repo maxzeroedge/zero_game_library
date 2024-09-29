@@ -3,7 +3,7 @@
  * @module searchFextraLifeForGame
  */
 
-import { FextraLifeService } from '../services/fextralife';
+import { FextraLifeService } from '../services/fextralife.js';
 
 /**
  * Handles the request to get game detail

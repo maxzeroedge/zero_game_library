@@ -28,6 +28,20 @@ export const handler = routerHandler({
              * @description Route configuration for getting game list
              */
             {
+                path: "/v1/health",
+                method: "GET",
+                action: (_) => ({
+                    statusCode: 200
+                })
+            },
+            {
+                path: "/v1/completions",
+                method: "GET",
+                action: (_) => ({
+                    statusCode: 200
+                })
+            },
+            {
                 path: "/igdb/games",
                 method: "POST",
                 action: getIgdbGameList,
@@ -56,7 +70,7 @@ export const handler = routerHandler({
                 parseQueryParams: true,
             },
             {
-                path: "/fextralife/game/:gameId",
+                path: "/fextralife/search",
                 method: "POST",
                 action: searchFextraLifeForGame,
                 parseQueryString: true,

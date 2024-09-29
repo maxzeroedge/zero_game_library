@@ -1,15 +1,8 @@
 import { json, useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Game, SubDetail } from '~/models/igdb';
-import { config } from "~/config";
-
-const getGameById = async (gameId: string): Promise<Game> => {
-    const response = await fetch(`${config.api.baseUrl}/${config.api.apiType}/game/${gameId}`);
-    const data = await response.json();
-
-    return data.game as Game;
-
-}
+import { getGameById, searchFextraLifeWiki } from "~/services/gameService";
+import SearchComponent from "~/components/Search";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
     const gameId = params.gameId;
@@ -24,8 +17,8 @@ const GameCatalogItem = () => {
     const { game } = useLoaderData<{ game: Game }>();
 
     return (
-        <div className="max-w-4xl bg-white">
-            <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="bg-white">
+            <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mb-6">
                 <div className="flex flex-row gap-4 mb-6">
                     {game.image && (
                         <img src={game.image} alt={`${game.name} cover`} className="w-24 h-auto rounded-lg shadow-md mx-auto" />
@@ -128,6 +121,12 @@ const GameCatalogItem = () => {
                         </div>
                     )}
                 </div>
+            </div>
+            <div className="max-w-6xl mx-auto">
+                <SearchComponent 
+                    apiToCall={searchFextraLifeWiki}
+                    searchName={game.name!!}
+                />
             </div>
         </div>
     );

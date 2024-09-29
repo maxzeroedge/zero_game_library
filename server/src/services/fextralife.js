@@ -19,9 +19,6 @@ export class FextraLifeService {
      */
     constructor(gameName) {
         this.#gameName = gameName;
-        if(gameName) {
-            console.log(this.getGameUrl());
-        }
     }
 
     getGamesList() {
@@ -43,18 +40,21 @@ export class FextraLifeService {
         if(!this.#url) {
             this.#url = this.getGamesList().filter((v) => v.name == gameName)[0]?.url;
         }
+        console.log(this.getGamesList());
         return this.#url;
     }
 
     searchForGame(query) {
-        base_query = `#gsc.tab=0&gsc.q=${query}&gsc.sort=`
-        const $ = cheerio.load(`${this.#url}${base_query}`)
+        const base_query = `#gsc.tab=0&gsc.q=${query}&gsc.sort=`
+        const $ = cheerio.load(`${this.getGameUrl()}${base_query}`)
         const results = $('.gsc-results.gsc-webResult').find('.gsc-webResult.gsc-result').map((res) => {
             const el = res.find('a.gs-title')[0];
+            console.log(el.text());
             return {
                 'name': el.text(),
                 'url': el.attr('href')
             }
-        })
+        });
+        return results;
     }
 }
