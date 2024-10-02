@@ -3,10 +3,12 @@ import * as cheerio from 'cheerio';
 const url = "https://fextralife.com"
 const wiki_list = {
     "text": "Wikis",
-    "class": "menu-item-282906",
+    "class": "menu-item", //-282906
     "submenu_class": "sub-menu sub-menu-282906",
     "path": "li>ul>[li>ul>[li>a]]"
 }
+
+const print = console.log;
 
 export class FextraLifeService {
 
@@ -21,39 +23,57 @@ export class FextraLifeService {
         this.#gameName = gameName;
     }
 
-    getGamesList() {
-        const $ = cheerio.load("https://fextralife.com");
-        const menuItems = $(`li.${wiki_list["class"]}`).find('ul')
-            .map((el) => {
-                return el.find('li ul').map((subel) => {
-                    const foundElement = subel.find('li a');
-                    return {
-                        'name': foundElement.text(),
-                        'url': foundElement.attr('href')
-                    };
-                }).reduce((ac, v) => [...ac, ...v], [])
-            }).reduce((ac, v) => [...ac, ...v], [])
+    async getGamesList() {
+        // Cloudflare detection kicks in...
+        const url = "https://fextralife.com";
+        const html_data = await (await fetch(url)).text();
+        const $ = cheerio.load(html_data);
+        let menuItems = [];
+        print($('li').length)
+        $(`li.${wiki_list["class"]}`).each((parentEl) => {
+            print(parentEl.text());
+            if(parentEl.find('>a').text() == "Wikis") {
+                print("Getting List of Wikis")
+                parentEl.find('ul')
+                .each((el) => {
+                    const items = el.find('li ul').map((subel) => {
+                        const foundElement = subel.find('li a');
+                        return {
+                            'name': foundElement.text(),
+                            'url': foundElement.attr('href')
+                        };
+                    }).each((ac, v) => {
+                        menuItems.push(v);
+                    })
+                });
+            }
+            
+        })
         return menuItems;
     }
 
-    getGameUrl() {
+    async getGameUrl() {
         if(!this.#url) {
-            this.#url = this.getGamesList().filter((v) => v.name == gameName)[0]?.url;
+            const gamesList = await this.getGamesList();
+            this.#url = gamesList.filter((v) => v.name == gameName)[0]?.url;
         }
-        console.log(this.getGamesList());
         return this.#url;
     }
 
-    searchForGame(query) {
-        const base_query = `#gsc.tab=0&gsc.q=${query}&gsc.sort=`
-        const $ = cheerio.load(`${this.getGameUrl()}${base_query}`)
-        const results = $('.gsc-results.gsc-webResult').find('.gsc-webResult.gsc-result').map((res) => {
+    async searchForGame(query) {
+        const base_query = `#gsc.tab=0&gsc.q=${query}&gsc.sort=`;
+        const base_url = await this.getGameUrl();
+        const url = `${base_url}${base_query}`;
+        const html_data = await (await fetch(url)).text();
+        const $ = cheerio.load(html_data);
+        const results = [];
+        $('.gsc-results.gsc-webResult').find('.gsc-webResult.gsc-result').each((res) => {
             const el = res.find('a.gs-title')[0];
-            console.log(el.text());
-            return {
+            print(el.text());
+            results.push({
                 'name': el.text(),
                 'url': el.attr('href')
-            }
+            });
         });
         return results;
     }
