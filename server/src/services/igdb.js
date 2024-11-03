@@ -5,6 +5,7 @@
 
 import { GameResultMapper } from "../utils/mapper.js";
 import { SecretService } from "./secrets.js";
+import { ParameterService } from "./ssm.js";
 
 /** @constant {string} */
 const AUTH_BASE_URL = "https://id.twitch.tv/oauth2/token";
@@ -35,6 +36,7 @@ export class IGDBService {
         this.#clientId = clientId || "";
         this.#clientSecret = clientSecret || "";
         this.secretService = new SecretService();
+        this.parameterService = new ParameterService();
     }
 
     /**
@@ -55,7 +57,7 @@ export class IGDBService {
      */
     async fetchAccessToken() {
         if (!this.#clientId || !this.#clientSecret) {
-            const secret = await this.secretService.getClientCredentialsFromSecret();
+            const secret = await this.parameterService.getClientCredentialsFromParameters();
             this.#clientId = secret.IGDB_CLIENT_ID;
             this.#clientSecret = secret.IGDB_CLIENT_SECRET;
         }

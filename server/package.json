@@ -24,6 +24,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.682.0",
     "@langchain/community": "^0.3.3",
     "@langchain/core": "^0.3.3",
     "@langchain/langgraph": "^0.2.9",

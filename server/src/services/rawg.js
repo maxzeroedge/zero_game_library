@@ -1,5 +1,6 @@
 import { GameResultMapper } from "../utils/mapper.js";
 import { SecretService } from "./secrets.js";
+import { ParameterService } from "./ssm.js";
 
 /**
  * Service class for interacting with the RAWG API.
@@ -10,6 +11,7 @@ export class RAWGService {
      */
     constructor() {
         this.secretService = new SecretService();
+        this.parameterService = new ParameterService();
     }
 
     /**
@@ -17,7 +19,7 @@ export class RAWGService {
      * @returns {Promise<string>} A promise that resolves to the RAWG API key.
      */
     async getAccessToken() {
-        const secret = await this.secretService.getClientCredentialsFromSecret();
+        const secret = await this.parameterService.getClientCredentialsFromParameters();
         return secret.RAWG_API_KEY;
     }
 
