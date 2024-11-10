@@ -28,9 +28,14 @@
     "@langchain/community": "^0.3.3",
     "@langchain/core": "^0.3.3",
     "@langchain/langgraph": "^0.2.9",
+    "@types/selenium-webdriver": "^4.1.27",
     "aws-lambda-router": "^0.11.0",
     "cheerio": "^1.0.0",
+    "chromedriver": "^130.0.4",
+    "geckodriver": "^5.0.0",
     "langchain": "^0.3.2",
-    "ollama": "^0.5.9"
+    "ollama": "^0.5.9",
+    "readline-sync": "^1.4.10",
+    "selenium-webdriver": "^4.26.0"
   }
 }

@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { FextraSelenium } from './fextra_selenium';
 
 const url = "https://fextralife.com"
 const wiki_list = {
@@ -24,32 +25,19 @@ export class FextraLifeService {
     }
 
     async getGamesList() {
-        // Cloudflare detection kicks in...
-        const url = "https://fextralife.com";
-        const html_data = await (await fetch(url)).text();
-        const $ = cheerio.load(html_data);
-        let menuItems = [];
-        print($('li').length)
-        $(`li.${wiki_list["class"]}`).each((parentEl) => {
-            print(parentEl.text());
-            if(parentEl.find('>a').text() == "Wikis") {
-                print("Getting List of Wikis")
-                parentEl.find('ul')
-                .each((el) => {
-                    const items = el.find('li ul').map((subel) => {
-                        const foundElement = subel.find('li a');
-                        return {
-                            'name': foundElement.text(),
-                            'url': foundElement.attr('href')
-                        };
-                    }).each((ac, v) => {
-                        menuItems.push(v);
-                    })
-                });
-            }
-            
-        })
-        return menuItems;
+        const fextraSelenium = new FextraSelenium("chrome");
+        let gameList = [];
+
+        try {
+            await fextraSelenium.setupDriver();
+            await fextraSelenium.navigateToFextralife();
+            gameList = await fextraSelenium.fetchGameTitles();
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            await fextraSelenium.close();
+        }
+        return gameList;
     }
 
     async getGameUrl() {
