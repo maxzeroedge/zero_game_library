@@ -3,7 +3,7 @@ import { Game } from "~/models/igdb";
 import debounce from 'lodash/debounce';
 
 export type SearchComponentProps = {
-    apiToCall: (a: string) => any,
+    apiToCall: (a: string, b: string) => any,
     searchName: string
 }
 
@@ -19,7 +19,7 @@ const SearchComponent = ({ apiToCall, searchName }: SearchComponentProps) => {
         setIsLoading(true);
         let games = [];
         try {
-            games = await apiToCall(searchString);
+            games = await apiToCall(searchName, searchString);
         } catch (error) {
             setErrors([...errors, error]);
         } finally {

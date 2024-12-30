@@ -23,14 +23,14 @@ export const getGameById = async (gameId: string): Promise<Game> => {
 
 }
 
-export const searchFextraLifeWiki = async (searchString: string) => {
+export const searchFextraLifeWiki = async (gameName: string, searchString: string) => {
     const response = await fetch(
         `${config.api.baseUrl}/fextralife/search`,
         {
             method: 'POST',
 
 
-            body: JSON.stringify({ searchString }),
+            body: JSON.stringify({ gameName, searchString }),
         }
     );
     const data = await response.json();

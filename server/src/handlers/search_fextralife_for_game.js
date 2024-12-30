@@ -15,7 +15,7 @@ export default async function searchFextraLifeForGame(request, context) {
     const gameName = request.body?.gameName;
     const searchString = request.body?.searchString;
     const fextraLifeService = new FextraLifeService(gameName);
-    const searchResults = fextraLifeService.searchForGame(searchString);
+    const searchResults = await fextraLifeService.searchForGame(searchString);
     return {
         statusCode: 200,
         body: JSON.stringify({searchResults})

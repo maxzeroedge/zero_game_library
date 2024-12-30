@@ -1,5 +1,5 @@
-const { Builder, By } = require('selenium-webdriver');
-const readlineSync = require('readline-sync');
+import { Builder, By, until } from 'selenium-webdriver';
+import * as readlineSync from 'readline-sync';
 
 export class FextraSelenium {
     /**
@@ -39,7 +39,7 @@ export class FextraSelenium {
     }
 
     async navigateToFextralife() {
-        const url = 'https://fextralife.com/wikis/';
+        const url = 'https://www.wiki.fextralife.com/';
         
         // Open the Fextralife URL
         await this.driver.get(url);
@@ -55,12 +55,12 @@ export class FextraSelenium {
     }
 
     async fetchGameTitles() {
-        const gameElements = await this.driver.findElements(By.css("a.wiki-link"));
+        const gameElements = await this.driver.findElements(By.css("div.WikiLogos>a"));
         const gameTitles = [];
 
         // Extract titles from each game element
         for (let game of gameElements) {
-            const name = await game.getAttribute('title');
+            const name = await (await game.findElement(By.css('img'))).getAttribute('alt');
             const url = await game.getAttribute('href');
             if (name) {
                 gameTitles.push({
@@ -71,24 +71,21 @@ export class FextraSelenium {
         }
 
         // Print the list of supported games
-        console.log("Supported Games on Fextralife:");
-        gameTitles.forEach((game, idx) => {
-            console.log(`${idx + 1}. ${game}`);
-        });
+        // console.log("Supported Games on Fextralife:");
+        // gameTitles.forEach((game, idx) => {
+        //     console.log(`${idx + 1}. ${game.name}`);
+        // });
+        return gameTitles;
     }
 
-    async searchInGame(gameTitle, searchTerm) {
-        // Find the URL for the specified game
-        const gameUrl = this.gameUrls.get(gameTitle);
-        
+    async searchInGame(gameUrl, searchTerm) {
         if (!gameUrl) {
-            console.log(`Game titled "${gameTitle}" not found in the supported games list.`);
+            console.log(`Game not found in the supported games list.`);
             return;
         }
 
         // Navigate to the game URL
         await this.driver.get(gameUrl);
-        console.log(`Navigated to ${gameTitle} wiki page.`);
 
          // Check if a Captcha is present
          const captchaDetected = await this.isCaptchaPresent();
@@ -100,16 +97,28 @@ export class FextraSelenium {
         // Search functionality depends on the site’s structure; here, we assume there's a search box
         // Find the search box within the game page
         try {
-            const searchBox = await this.driver.findElement(By.css("input[type='search']"));
+            await this.driver.wait(until.elementsLocated(By.css(".navbar-form.navbar-right input#spf")), 5000);
+            // TOFIX: Element not interactable
+            const searchBox = await this.driver.findElement(By.css(".navbar-form.navbar-right input#spf"));
             await searchBox.sendKeys(searchTerm);
             searchBox.sendKeys('\n'); // Submit the search
             await this.driver.wait(until.urlContains(searchTerm), 5000);
             
-            console.log(`Searching for "${searchTerm}" within the ${gameTitle} wiki page...`);
+            console.log(`Searching for "${searchTerm}" within the wiki page...`);
             await this.driver.sleep(2000); // Wait to let results load
+            const searchResults = await this.driver.findElements(By.css(".gsc-results.gsc-webResult .gsc-webResult.gsc-result a.gs-title"));
+            const results = [];
+            for (let searchResult of searchResults) {
+                results.push({
+                    name: searchResult.getText(),
+                    url: await searchResult.getAttribute('href')
+                });
+            }
         } catch (error) {
+            console.error(error);
             console.log("Search functionality might not be available on this page.");
         }
+        return [];
     }
 
     async close() {
