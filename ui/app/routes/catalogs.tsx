@@ -1,15 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
-import debounce from 'lodash/debounce';
 import { Footer } from "~/components/Footer";
-import { Game } from "~/models/igdb";
-import { config } from "~/config";
 import SearchComponent from "~/components/Search";
+import CatalogResult from "~/components/search/CatalogResult";
 import { fetchGames } from "~/services/gameService";
 
 export default function Catalog() {
-  const [games, setGames] = useState<Game[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,6 +13,7 @@ export default function Catalog() {
         <SearchComponent 
           apiToCall={fetchGames}
           searchName="games"
+          ResultComponent={CatalogResult}
         />
       </main>
       {/* Footer */}

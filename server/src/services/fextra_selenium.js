@@ -1,4 +1,4 @@
-import { Builder, By, until } from 'selenium-webdriver';
+import { Builder, By, until, Key } from 'selenium-webdriver';
 import * as readlineSync from 'readline-sync';
 
 export class FextraSelenium {
@@ -97,10 +97,10 @@ export class FextraSelenium {
         // Search functionality depends on the site’s structure; here, we assume there's a search box
         // Find the search box within the game page
         try {
-            await this.driver.wait(until.elementsLocated(By.css(".navbar-form.navbar-right input#spf")), 5000);
-            // TOFIX: Element not interactable
-            const searchBox = await this.driver.findElement(By.css(".navbar-form.navbar-right input#spf"));
-            await searchBox.sendKeys(searchTerm);
+            await this.driver.wait(until.elementsLocated(By.css("input#spf")), 5000);
+            const searchBox = await this.driver.findElement(By.css("input#spf"));
+            
+            await searchBox.sendKeys(searchTerm, Key.RETURN);
             searchBox.sendKeys('\n'); // Submit the search
             await this.driver.wait(until.urlContains(searchTerm), 5000);
             
@@ -109,11 +109,16 @@ export class FextraSelenium {
             const searchResults = await this.driver.findElements(By.css(".gsc-results.gsc-webResult .gsc-webResult.gsc-result a.gs-title"));
             const results = [];
             for (let searchResult of searchResults) {
+                let name = await searchResult.getText();
+                if (!name) {
+                    continue;
+                }
                 results.push({
-                    name: searchResult.getText(),
+                    name,
                     url: await searchResult.getAttribute('href')
                 });
             }
+            return results;
         } catch (error) {
             console.error(error);
             console.log("Search functionality might not be available on this page.");

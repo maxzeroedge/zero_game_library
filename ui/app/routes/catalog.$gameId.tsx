@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Game, SubDetail } from '~/models/igdb';
 import { getGameById, searchFextraLifeWiki } from "~/services/gameService";
 import SearchComponent from "~/components/Search";
+import GameSearchResult from "~/components/search/GameSearchResult";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
     const gameId = params.gameId;
@@ -126,6 +127,7 @@ const GameCatalogItem = () => {
                 <SearchComponent 
                     apiToCall={searchFextraLifeWiki}
                     searchName={game.name!!}
+                    ResultComponent={GameSearchResult}
                 />
             </div>
         </div>

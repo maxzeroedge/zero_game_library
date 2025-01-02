@@ -18,6 +18,6 @@ export default async function getIgdbGameList(request, context) {
     const games = await igdbService.getGames(searchString);
     return {
         statusCode: 200,
-        body: JSON.stringify({games})
+        body: JSON.stringify({searchResults: games})
     };
 }

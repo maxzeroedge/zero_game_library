@@ -9,7 +9,9 @@ const wiki_list = {
     "path": "li>ul>[li>ul>[li>a]]"
 }
 
-const print = console.log;
+let gameList = [];
+
+const print = console.debug;
 
 export class FextraLifeService {
 
@@ -25,8 +27,10 @@ export class FextraLifeService {
     }
 
     async getGamesList() {
+        if (gameList.length) {
+            return gameList;
+        }
         const fextraSelenium = new FextraSelenium("chrome");
-        let gameList = [];
 
         try {
             await fextraSelenium.setupDriver();

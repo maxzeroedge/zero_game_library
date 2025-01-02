@@ -3,11 +3,12 @@ import { Game } from "~/models/igdb";
 import debounce from 'lodash/debounce';
 
 export type SearchComponentProps = {
-    apiToCall: (a: string, b: string) => any,
-    searchName: string
+    apiToCall: (params: any) => any,
+    searchName: string,
+    ResultComponent: React.FC<any>
 }
 
-const SearchComponent = ({ apiToCall, searchName }: SearchComponentProps) => {
+const SearchComponent = ({ apiToCall, searchName, ResultComponent }: SearchComponentProps) => {
 
 
     const [games, setGames] = useState<Game[]>([]);
@@ -19,7 +20,7 @@ const SearchComponent = ({ apiToCall, searchName }: SearchComponentProps) => {
         setIsLoading(true);
         let games = [];
         try {
-            games = await apiToCall(searchName, searchString);
+            games = await apiToCall({searchName, searchString});
         } catch (error) {
             setErrors([...errors, error]);
         } finally {
@@ -88,11 +89,9 @@ const SearchComponent = ({ apiToCall, searchName }: SearchComponentProps) => {
             </div>
             <div className="grid grid-cols-1 gap-6">
                 {games?.map((game) => (
-                    <div key={game.id} className="bg-white overflow-hidden group relative">
-                        <a className="text-xl font-semibold mb-2" href={`/catalog/${game.id}`}>
-                            {game.name}
-                        </a>
-                    </div>
+                    <ResultComponent 
+                        {...game}
+                    />
                 ))}
             </div>
             <div className="fixed bottom-4 right-4 flex flex-col-reverse space-y-reverse space-y-2">
