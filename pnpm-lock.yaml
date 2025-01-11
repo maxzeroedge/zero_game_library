@@ -73,6 +73,9 @@ importers:
 
   crawl_alone:
     dependencies:
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       puppeteer:
         specifier: ^24.0.0
         version: 24.0.0(typescript@5.6.3)

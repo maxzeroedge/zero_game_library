@@ -5,8 +5,7 @@
     "ui/*",
     "server/*",
     "crawl/*",
-    "crawl_alone/*",
-    "crawl/lib/lambda/*"
+    "crawl_alone/*"
   ],
   "npmClient": "pnpm"
 }

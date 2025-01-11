@@ -10,7 +10,7 @@ export class LoneCrawler {
     #page;
     #visited;
     
-    constructor(out_dir=__dirname) {
+    constructor(out_dir='') {
         this.#processQueue = [];
         this.#visited = {};
         this.#out_dir = out_dir;
@@ -55,14 +55,14 @@ export class LoneCrawler {
                 const html = await page.content();
 
                 // Save to S3
-                const sanitizedKey = path.join(this.#out_dir, 'zero-game-library/raw_html/' + sanitizedUrl + '.html');
+                const sanitizedKey = path.join(this.#out_dir, 'zero-game-library', raw_html, sanitizedUrl + '.html');
                 mkdirSync(path.dirname(sanitizedKey));
                 writeFileSync(path.join(this.#out_dir, sanitizedKey), html);
 
                 // Save to S3
                 let contentHtml = await page.$('#main-content');
                 contentHtml = contentHtml.$eval('#wiki-content-block', el => el.outerHTML);
-                const contentSanitizedKey = path.join(this.#out_dir, 'zero-game-library/content/' + sanitizedUrl + '.html');
+                const contentSanitizedKey = path.join(this.#out_dir, 'zero-game-library', 'content',sanitizedUrl + '.html');
                 mkdirSync(path.dirname(contentSanitizedKey));
                 writeFileSync(path.join(this.#out_dir, contentSanitizedKey), contentHtml);
 
