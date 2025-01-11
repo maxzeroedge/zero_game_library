@@ -5,7 +5,8 @@
     "crawl": "dist"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && pnpm run build:lambda",
+    "build:lambda": "cd lib/lambda && pnpm run build",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"

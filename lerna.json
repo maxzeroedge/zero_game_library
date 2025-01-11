@@ -4,7 +4,9 @@
   "packages": [
     "ui/*",
     "server/*",
-    "crawl/*"
+    "crawl/*",
+    "crawl_alone/*",
+    "crawl/lib/lambda/*"
   ],
   "npmClient": "pnpm"
 }

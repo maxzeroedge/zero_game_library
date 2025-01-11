@@ -39,7 +39,7 @@ export class WebCrawlerStack extends Stack {
     // SQS Queue for crawl tasks
     const queue = new sqs.Queue(this, 'ZeroGameLibraryCrawlQueue', {
       queueName: 'ZeroGameLibraryCrawlQueue',
-      visibilityTimeout: cdk.Duration.seconds(30),
+      visibilityTimeout: cdk.Duration.seconds(900),
     });
 
     // Add Chrome Layer (prebuilt)
@@ -52,7 +52,7 @@ export class WebCrawlerStack extends Stack {
     // Lambda Function
     const crawlerLambda = new lambda.Function(this, 'ZeroGameLibraryCrawlerLambda', {
       functionName: 'ZeroGameLibraryCrawlerLambda',
-      runtime: lambda.Runtime.NODEJS_22_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, 'lambda')),
       timeout: cdk.Duration.seconds(900), // Max for Lambda

@@ -1,0 +1,21 @@
+{
+  "name": "@zero_game_library/crawl/lambda",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild index.js --bundle --platform=node --target=node18 --external:chrome-aws-lambda --external:puppeteer-core --outfile=../../dist/lib/lambda/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.1692.0",
+    "esbuild": "^0.24.2"
+  },
+  "dependencies": {
+    "chrome-aws-lambda": "^10.1.0"
+  }
+}
