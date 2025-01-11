@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { WebCrawlerStack } from '../lib/crawl-stack';
+import { WebCrawlerStack } from './lib/crawl-stack';
 
 const app = new cdk.App();
 new WebCrawlerStack(app, 'ZeroGameLibraryCrawlerStack', {
+  stackName: "ZeroGameLibraryCrawlerStack",
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */

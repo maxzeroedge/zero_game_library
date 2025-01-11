@@ -6,6 +6,8 @@
   "scripts": {
     "ui:dev": "cd ui && pnpm run dev",
     "server:dev": "cd server && pnpm run dev",
+    "crawl:build": "cd crawl && pnpm run build",
+    "crawl:cdk": "cd crawl && pnpm run cdk",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

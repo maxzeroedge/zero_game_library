@@ -27,15 +27,16 @@ export const handler = async (event) => {
 
             // Check if URL is already visited
             const isVisited = await dynamodb
-                .get({ TableName: TABLE_NAME, Key: { url } })
+                .get({ TableName: TABLE_NAME, Key: { sanitizedUrl } })
                 .promise();
             if (isVisited.Item) continue;
 
+            const sanitizedUrl = url.replace(/[^a-zA-Z0-9]/g, '_');
             // Mark URL as visited
             await dynamodb
                     .put({
                         TableName: TABLE_NAME,
-                        Item: { url, status: 'pending', lastUpdated: Date.now() },
+                        Item: { sanitizedUrl, url, status: 'pending', lastUpdated: Date.now() },
                     })
                     .promise();
 
@@ -44,12 +45,24 @@ export const handler = async (event) => {
             const html = await page.content();
 
             // Save to S3
-            const sanitizedKey = url.replace(/[^a-zA-Z0-9]/g, '_') + '.html';
+            const sanitizedKey = 'zero-game-library/raw_html/' + sanitizedUrl + '.html';
             await s3
                 .putObject({
                     Bucket: BUCKET_NAME,
                     Key: sanitizedKey,
                     Body: html,
+                    ContentType: 'text/html',
+                })
+                .promise();
+
+            // Save to S3
+            const contentHtml = await page.locator('#main-content #wiki-content-block');
+            const contentSanitizedKey = 'zero-game-library/content/' + sanitizedUrl + '.html';
+            await s3
+                .putObject({
+                    Bucket: BUCKET_NAME,
+                    Key: contentSanitizedKey,
+                    Body: contentHtml,
                     ContentType: 'text/html',
                 })
                 .promise();

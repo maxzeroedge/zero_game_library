@@ -4,29 +4,37 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class WebCrawlerStack extends Stack {
   constructor(scope: cdk.App, id: string, props?: StackProps) {
     super(scope, id, props);
 
     // S3 Bucket for storing HTML files
-    const bucket = new s3.Bucket(this, 'ZeroGameLibraryCrawlerBucket', {
-      bucketName: 'ZeroGameLibraryCrawlerBucket',
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
+    let bucket;
+    if (process.env.UPLOAD_BUCKET) {
+      bucket = s3.Bucket.fromBucketName(this, 'ZeroGameLibraryCrawlerBucket', process.env.UPLOAD_BUCKET);
+    } else {
+      bucket = new s3.Bucket(this, 'ZeroGameLibraryCrawlerBucket', {
+        bucketName: 'ZeroGameLibraryCrawlerBucket',
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      });
+    }
 
     // DynamoDB Table to track visited URLs
     const table = new dynamodb.Table(this, 'ZeroGameLibraryVisitedUrlsTable', {
       tableName: 'ZeroGameLibraryVisitedUrlsTable',
-      partitionKey: { name: 'url', type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: 'sanitizedUrl', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       billingMode: dynamodb.BillingMode.PROVISIONED,
       maxReadRequestUnits: 10,
       maxWriteRequestUnits: 10
     });
+    // 
 
     // SQS Queue for crawl tasks
     const queue = new sqs.Queue(this, 'ZeroGameLibraryCrawlQueue', {
