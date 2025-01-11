@@ -5,6 +5,7 @@ import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as path from 'path';
 
 export class WebCrawlerStack extends Stack {
@@ -14,14 +15,17 @@ export class WebCrawlerStack extends Stack {
     // S3 Bucket for storing HTML files
     const bucket = new s3.Bucket(this, 'ZeroGameLibraryCrawlerBucket', {
       bucketName: 'ZeroGameLibraryCrawlerBucket',
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // Change to RETAIN in production
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     // DynamoDB Table to track visited URLs
     const table = new dynamodb.Table(this, 'ZeroGameLibraryVisitedUrlsTable', {
       tableName: 'ZeroGameLibraryVisitedUrlsTable',
       partitionKey: { name: 'url', type: dynamodb.AttributeType.STRING },
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // Change to RETAIN in production
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      billingMode: dynamodb.BillingMode.PROVISIONED,
+      maxReadRequestUnits: 10,
+      maxWriteRequestUnits: 10
     });
 
     // SQS Queue for crawl tasks
@@ -34,7 +38,7 @@ export class WebCrawlerStack extends Stack {
     const chromeLayer = lambda.LayerVersion.fromLayerVersionArn(
       this,
       'ChromeLayer',
-      'arn:aws:lambda:<region>:764866452798:layer:chrome-aws-lambda:31' // Replace <region> with your AWS region
+      'arn:aws:lambda:ap-south-1:764866452798:layer:chrome-aws-lambda:50'
     );
 
     // Lambda Function
@@ -52,6 +56,13 @@ export class WebCrawlerStack extends Stack {
         QUEUE_URL: queue.queueUrl,
       },
     });
+
+    // Add SQS Event Source to Lambda
+    crawlerLambda.addEventSource(
+      new lambdaEventSources.SqsEventSource(queue, {
+        batchSize: 10, // Process up to 10 messages at once
+      })
+    );
 
     // Grant permissions to Lambda
     bucket.grantReadWrite(crawlerLambda);
